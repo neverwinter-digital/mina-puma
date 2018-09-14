@@ -22,6 +22,9 @@ namespace :puma do
     puma_port_option = "-p #{fetch(:puma_port)}" if set?(:puma_port)
 
     comment "Starting Puma..."
+    comment "pumactl_socket #{fetch(:pumactl_socket)} for start."
+    comment "puma_config #{fetch(:puma_config)} for start."
+
     command %[
       if [ -e "#{fetch(:pumactl_socket)}" ]; then
         echo 'Puma is already running!';
@@ -39,6 +42,9 @@ namespace :puma do
   task stop: :remote_environment do
     comment "Stopping Puma..."
     pumactl_command 'stop'
+
+    comment "pumactl_socket #{fetch(:pumactl_socket)} for stop."
+
     command %[rm -f '#{fetch(:pumactl_socket)}']
   end
 
@@ -68,6 +74,9 @@ namespace :puma do
   end
 
   def pumactl_command(command)
+    comment "pumactl_command pumactl_socket #{fetch(:pumactl_socket)} for #{command}."
+    comment "pumactl_command puma_config #{fetch(:puma_config)} for #{command}."
+
     cmd =  %{
       if [ -e "#{fetch(:pumactl_socket)}" ]; then
         if [ -e "#{fetch(:puma_config)}" ]; then
