@@ -46,6 +46,12 @@ namespace :puma do
     comment "pumactl_socket #{fetch(:pumactl_socket)} for stop."
 
     command %[rm -f '#{fetch(:pumactl_socket)}']
+
+    command %[
+      if [ -e "#{fetch(:puma_pid)}" ]; then
+        kill -s SIGTERM `cat "#{fetch(:puma_pid)}"`
+      fi
+    ]
   end
 
   desc 'Restart puma'
